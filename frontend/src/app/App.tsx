@@ -107,7 +107,7 @@ function App() {
       label: "BACKEND OFFLINE",
       title: "Backend Unavailable",
       description: "Check the Python API server",
-      color: "#d97878",
+      color: "#ab4d4d",
     },
   }[backend.status];
 
