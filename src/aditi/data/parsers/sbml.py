@@ -27,6 +27,7 @@ class ParsedReactionParticipant:
 
     metabolite_identifier: str
     coefficient: Decimal = Decimal(1)
+    metaid: str | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -38,6 +39,7 @@ class ParsedReaction:
     reactants: tuple[ParsedReactionParticipant, ...]
     products: tuple[ParsedReactionParticipant, ...]
     reversible: bool
+    modifiers: tuple[ParsedReactionParticipant, ...] = ()
 
 
 @dataclass(frozen=True, slots=True)
@@ -54,8 +56,8 @@ class SBMLParser:
     """
     Parse core SBML XML into Aditi's neutral pathway representation.
 
-    The parser supports SBML core model, species, reaction,
-    speciesReference, stoichiometry, and reversible attributes.
+    Supports model, species, reactions, reactants, products,
+    modifiers, stoichiometry, and reversibility.
     """
 
     _XML_DECLARATION_PATTERN = re.compile(
@@ -65,8 +67,6 @@ class SBMLParser:
 
     @staticmethod
     def _local_name(tag: str) -> str:
-        """Return an XML tag without its namespace."""
-
         if "}" in tag:
             return tag.rsplit("}", 1)[1]
 
@@ -78,8 +78,6 @@ class SBMLParser:
         element: ET.Element,
         name: str,
     ) -> ET.Element | None:
-        """Find a direct child by its local XML name."""
-
         for child in element:
             if cls._local_name(child.tag) == name:
                 return child
@@ -92,8 +90,6 @@ class SBMLParser:
         element: ET.Element,
         name: str,
     ) -> tuple[ET.Element, ...]:
-        """Find direct children by their local XML name."""
-
         return tuple(
             child
             for child in element
@@ -106,8 +102,6 @@ class SBMLParser:
         attribute: str,
         context: str,
     ) -> str:
-        """Read a required, non-empty XML attribute."""
-
         value = element.get(attribute)
 
         if value is None or not value.strip():
@@ -119,8 +113,6 @@ class SBMLParser:
 
     @staticmethod
     def _parse_reversible(value: str | None, reaction_id: str) -> bool:
-        """Parse an SBML boolean attribute."""
-
         if value is None:
             return True
 
@@ -141,8 +133,6 @@ class SBMLParser:
         value: str | None,
         species_id: str,
     ) -> int | None:
-        """Parse an optional integer charge."""
-
         if value is None:
             return None
 
@@ -159,8 +149,6 @@ class SBMLParser:
         reaction_id: str,
         species_id: str,
     ) -> Decimal:
-        """Parse a positive finite stoichiometric coefficient."""
-
         if value is None:
             return Decimal(1)
 
@@ -181,20 +169,6 @@ class SBMLParser:
         return coefficient
 
     def parse(self, source: str | bytes) -> ParsedPathway:
-        """
-        Parse an SBML XML document.
-
-        Args:
-            source: XML document as a string or bytes.
-
-        Returns:
-            A ParsedPathway containing metabolites and reactions.
-
-        Raises:
-            SBMLParseError: If the document is malformed or contains
-                unsupported or invalid core pathway structures.
-        """
-
         if not isinstance(source, (str, bytes)):
             raise TypeError("SBML source must be a string or bytes.")
 
@@ -233,8 +207,6 @@ class SBMLParser:
         return self._parse_model(model)
 
     def _parse_model(self, model: ET.Element) -> ParsedPathway:
-        """Extract pathway data from an SBML model."""
-
         model_id = model.get("id")
         model_name = model.get("name")
 
@@ -347,8 +319,6 @@ class SBMLParser:
         reaction: ET.Element,
         known_metabolites: set[str],
     ) -> ParsedReaction:
-        """Parse a single SBML reaction."""
-
         reaction_id = self._required_attribute(
             reaction,
             "id",
@@ -361,12 +331,6 @@ class SBMLParser:
             if reaction_name and reaction_name.strip()
             else reaction_id
         )
-
-        if self._find_child(reaction, "listOfModifiers") is not None:
-            raise SBMLParseError(
-                f"Reaction '{reaction_id}' contains modifier species "
-                "references, which are not supported yet."
-            )
 
         reactants = self._parse_participants(
             reaction,
@@ -384,6 +348,15 @@ class SBMLParser:
             known_metabolites,
         )
 
+        modifiers = self._parse_participants(
+            reaction,
+            "listOfModifiers",
+            "modifierSpeciesReference",
+            reaction_id,
+            known_metabolites,
+            allow_duplicates=True,
+        )
+
         if not reactants or not products:
             raise SBMLParseError(
                 f"Reaction '{reaction_id}' must contain at least "
@@ -399,6 +372,7 @@ class SBMLParser:
                 reaction.get("reversible"),
                 reaction_id,
             ),
+            modifiers=modifiers,
         )
 
     def _parse_participants(
@@ -408,8 +382,9 @@ class SBMLParser:
         reference_name: str,
         reaction_id: str,
         known_metabolites: set[str],
+        allow_duplicates: bool = False,
     ) -> tuple[ParsedReactionParticipant, ...]:
-        """Parse reactant or product species references."""
+        """Parse reactant, product, or modifier species references."""
 
         participant_list = self._find_child(
             reaction,
@@ -438,7 +413,7 @@ class SBMLParser:
                     f"species '{species_id}'."
                 )
 
-            if species_id in seen_species:
+            if not allow_duplicates and species_id in seen_species:
                 raise SBMLParseError(
                     f"Reaction '{reaction_id}' contains duplicate "
                     f"species reference '{species_id}'."
@@ -456,6 +431,7 @@ class SBMLParser:
                 ParsedReactionParticipant(
                     metabolite_identifier=species_id,
                     coefficient=coefficient,
+                    metaid=reference.get("metaid"),
                 )
             )
 

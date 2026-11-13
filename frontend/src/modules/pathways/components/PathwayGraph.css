@@ -20,134 +20,127 @@
 
 .pathway-graph-controls {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: 10px;
+  right: 10px;
   z-index: 5;
   display: flex;
-  gap: 6px;
+  gap: 4px;
 }
 
 .pathway-graph-controls button {
-  width: 36px;
-  height: 34px;
-  border: 1px solid #344157;
-  border-radius: 6px;
-  background: #151d28;
-  color: #cbd5e1;
-  font-size: 13px;
+  width: 29px;
+  height: 27px;
+  border: 1px solid #d4d7d9;
+  border-radius: 3px;
+  background: #ffffff;
+  color: #343a40;
+  font-size: 12px;
   cursor: pointer;
-  transition:
-    background 0.15s ease,
-    border-color 0.15s ease,
-    color 0.15s ease;
 }
 
 .pathway-graph-controls button:hover {
-  background: #202d3c;
-  border-color: #72b99c;
-  color: #b7f0d9;
+  background: #f1f2f2;
+  border-color: #aeb5b0;
 }
 
 .pathway-graph-controls button:focus-visible {
-  outline: 2px solid #72b99c;
+  outline: 2px solid #718b7b;
   outline-offset: 2px;
 }
 
 .pathway-node-details {
   position: absolute;
-  left: 16px;
-  bottom: 16px;
+  left: 10px;
+  bottom: 10px;
   z-index: 5;
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  width: min(260px, calc(100% - 32px));
-  padding: 12px 14px;
-  border: 1px solid #344157;
-  border-radius: 8px;
-  background: rgba(17, 25, 36, 0.96);
-  color: #e8edf7;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  gap: 4px;
+  width: min(240px, calc(100% - 20px));
+  padding: 10px;
+  border: 1px solid #d4d7d9;
+  border-radius: 3px;
+  background: #ffffff;
+  color: #252a30;
 }
 
 .node-details-type {
-  color: #72b99c;
+  color: #68746c;
   font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 1.2px;
+  font-weight: 600;
 }
 
 .pathway-node-details strong {
   overflow-wrap: anywhere;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
 }
 
 .node-details-identity {
   overflow: hidden;
-  color: #8292a8;
-  font-size: 10px;
+  color: #777e83;
+  font-size: 9px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .pathway-graph-legend {
   position: absolute;
-  right: 16px;
-  bottom: 16px;
+  right: 10px;
+  bottom: 10px;
   z-index: 5;
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 9px 12px;
-  border: 1px solid #293547;
-  border-radius: 6px;
-  background: rgba(17, 25, 36, 0.94);
-  color: #aebbd0;
-  font-size: 10px;
+  gap: 11px;
+  padding: 7px 9px;
+  border: 1px solid #d4d7d9;
+  border-radius: 3px;
+  background: #ffffff;
+  color: #50575d;
+  font-size: 9px;
 }
 
 .pathway-graph-legend span {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 5px;
 }
 
 .pathway-graph-legend i {
   display: inline-block;
-  width: 10px;
-  height: 10px;
+  width: 9px;
+  height: 9px;
 }
 
 .legend-metabolite {
-  border: 1px solid #438e78;
+  border: 1px solid #658b77;
   border-radius: 50%;
-  background: #173d38;
+  background: #dce9df;
 }
 
 .legend-reaction {
-  border: 1px solid #7289b4;
-  border-radius: 3px;
-  background: #303b50;
+  border: 1px solid #8293a5;
+  border-radius: 2px;
+  background: #e5eaf0;
 }
 
 @media (max-width: 600px) {
   .pathway-graph-controls {
-    top: 10px;
-    right: 10px;
+    top: 7px;
+    right: 7px;
   }
 
   .pathway-graph-legend {
-    right: 10px;
-    bottom: 10px;
-    gap: 9px;
-    padding: 8px;
-    font-size: 9px;
+    right: 7px;
+    bottom: 7px;
+    gap: 7px;
+    padding: 6px;
+    font-size: 8px;
   }
 
   .pathway-node-details {
-    left: 10px;
-    bottom: 10px;
-    width: min(210px, calc(100% - 20px));
+    left: 7px;
+    bottom: 7px;
+    width: min(200px, calc(100% - 14px));
   }
 }

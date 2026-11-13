@@ -1,4 +1,15 @@
 
+from aditi.api.schemas.alignment_requests import (
+    AlignmentGapRequest,
+    AlignmentScoringRequest,
+    BiologicalSequenceRequest,
+    SequenceAlignmentRequest,
+)
+from aditi.api.schemas.alignments import (
+    AlignedSequenceSchema,
+    AlignmentScoreSchema,
+    SequenceAlignmentResponse,
+)
 from aditi.api.schemas.pathway_requests import (
     MetaboliteRequest,
     PathwayDefinitionRequest,
@@ -13,6 +24,11 @@ from aditi.api.schemas.pathways import (
 )
 
 __all__ = [
+    "AlignedSequenceSchema",
+    "AlignmentGapRequest",
+    "AlignmentScoreSchema",
+    "AlignmentScoringRequest",
+    "BiologicalSequenceRequest",
     "MetaboliteRequest",
     "PathwayDefinitionRequest",
     "PathwaySceneBoundsSchema",
@@ -21,4 +37,6 @@ __all__ = [
     "PathwaySceneResponse",
     "ReactionParticipantRequest",
     "ReactionRequest",
+    "SequenceAlignmentRequest",
+    "SequenceAlignmentResponse",
 ]

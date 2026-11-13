@@ -23,6 +23,7 @@ class GraphEdgeRole(Enum):
 
     REACTANT = "reactant"
     PRODUCT = "product"
+    MODIFIER = "modifier"
 
 
 @dataclass(frozen=True, slots=True)
@@ -63,6 +64,7 @@ class GraphEdge:
     Represents a directed connection between a metabolite and reaction.
 
     Reactant edges point from metabolite to reaction.
+    Modifier edges point from metabolite to reaction.
     Product edges point from reaction to metabolite.
     """
 
@@ -112,7 +114,7 @@ class PathwayGraph:
     - Metabolite nodes represent biochemical substances.
     - Reaction nodes represent biochemical transformations.
 
-    Directed edges preserve reactant and product relationships.
+    Directed edges preserve reactant, product, and modifier relationships.
     """
 
     pathway_identity: EntityIdentity
@@ -168,12 +170,14 @@ class PathwayGraph:
                     "Graph edge references a node that does not exist."
                 )
 
-            if edge.role is GraphEdgeRole.REACTANT:
+            if edge.role in (
+                GraphEdgeRole.REACTANT,
+                GraphEdgeRole.MODIFIER,
+            ):
                 valid_direction = (
                     source.node_type is GraphNodeType.METABOLITE
                     and target.node_type is GraphNodeType.REACTION
                 )
-
             else:
                 valid_direction = (
                     source.node_type is GraphNodeType.REACTION
@@ -251,6 +255,21 @@ class PathwayGraph:
                         source_identity=reaction.identity,
                         target_identity=metabolite.identity,
                         role=GraphEdgeRole.PRODUCT,
+                        coefficient=participant.coefficient,
+                    )
+                )
+
+            for participant in reaction.modifiers:
+                metabolite = participant.metabolite
+
+                add_node(metabolite)
+                add_node(reaction)
+
+                edges.append(
+                    GraphEdge(
+                        source_identity=metabolite.identity,
+                        target_identity=reaction.identity,
+                        role=GraphEdgeRole.MODIFIER,
                         coefficient=participant.coefficient,
                     )
                 )

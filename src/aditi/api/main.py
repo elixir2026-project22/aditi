@@ -1,8 +1,12 @@
+
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 
+from aditi.api.alignment_service import AlignmentAPIService
 from aditi.api.pathway_builder import PathwayGraphBuilder
 from aditi.api.pathway_service import PathwayAPIService
+from aditi.api.schemas.alignment_requests import SequenceAlignmentRequest
+from aditi.api.schemas.alignments import SequenceAlignmentResponse
 from aditi.api.schemas.pathway_requests import PathwayDefinitionRequest
 from aditi.api.schemas.pathways import PathwaySceneResponse
 from aditi.data.normalization.sbml import SBMLConversionError
@@ -19,6 +23,7 @@ def create_app(
     pathway_builder: PathwayGraphBuilder | None = None,
     pathway_service: PathwayAPIService | None = None,
     sbml_workflow: SBMLVisualizationWorkflow | None = None,
+    alignment_service: AlignmentAPIService | None = None,
 ) -> FastAPI:
     """Create the Aditi API application with injectable services."""
 
@@ -38,6 +43,12 @@ def create_app(
         sbml_workflow
         if sbml_workflow is not None
         else SBMLVisualizationWorkflow()
+    )
+
+    sequence_alignment_service = (
+        alignment_service
+        if alignment_service is not None
+        else AlignmentAPIService()
     )
 
     app = FastAPI(
@@ -148,6 +159,26 @@ def create_app(
         except LayoutRegistryError as error:
             raise HTTPException(
                 status_code=400,
+                detail=str(error),
+            ) from error
+
+    @app.post(
+        "/api/v1/alignments/pairwise",
+        response_model=SequenceAlignmentResponse,
+    )
+    def align_sequences(
+        alignment_request: SequenceAlignmentRequest,
+    ) -> SequenceAlignmentResponse:
+        """Perform global or local pairwise biological sequence alignment."""
+
+        try:
+            return sequence_alignment_service.align(
+                alignment_request,
+            )
+
+        except (ValueError, KeyError) as error:
+            raise HTTPException(
+                status_code=422,
                 detail=str(error),
             ) from error
 

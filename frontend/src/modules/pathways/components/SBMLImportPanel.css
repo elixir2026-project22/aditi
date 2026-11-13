@@ -1,77 +1,67 @@
+
 .sbml-import-panel {
   width: 100%;
   max-width: 650px;
-  padding: 23px;
+  padding: 15px;
   border: 1px solid var(--color-border);
-  border-radius: 10px;
-  background: var(--color-surface);
+  border-radius: 3px;
+  background: #ffffff;
 }
 
 .sbml-panel-heading {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 18px;
-  margin-bottom: 24px;
+  gap: 12px;
+  margin-bottom: 15px;
 }
 
 .sbml-eyebrow {
-  margin-bottom: 9px;
-  color: var(--color-accent);
+  margin-bottom: 5px;
+  color: var(--color-subtle);
   font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 1.4px;
+  font-weight: 550;
 }
 
 .sbml-panel-heading h2 {
   margin: 0;
-  color: #e5eaf1;
-  font-size: 18px;
+  color: var(--color-text);
+  font-size: 14px;
   font-weight: 600;
 }
 
 .sbml-panel-heading p {
   max-width: 420px;
-  margin: 9px 0 0;
+  margin: 5px 0 0;
   color: var(--color-muted);
-  font-size: 11px;
-  line-height: 1.7;
+  font-size: 10px;
+  line-height: 1.6;
 }
 
 .sbml-file-icon {
-  display: grid;
-  width: 42px;
-  height: 42px;
-  flex: 0 0 42px;
-  place-items: center;
-  border: 1px solid rgba(112, 183, 160, 0.25);
-  border-radius: 9px;
-  background: var(--color-accent-soft);
-  color: var(--color-accent);
+  display: none;
 }
 
 .sbml-file-icon svg {
-  width: 21px;
-  height: 21px;
+  display: none;
 }
 
 .sbml-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 13px;
 }
 
 .sbml-field {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 7px;
 }
 
 .sbml-field-label {
-  color: var(--color-subtle);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 1.1px;
+  color: var(--color-muted);
+  font-size: 10px;
+  font-weight: 550;
 }
 
 .sbml-file-input {
@@ -86,70 +76,67 @@
 
 .sbml-file-input:focus-visible + .sbml-selected-file,
 .sbml-file-input:focus-visible + .sbml-dropzone {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 3px;
+  outline: 2px solid #718b7b;
+  outline-offset: 2px;
 }
 
 .sbml-dropzone {
   display: flex;
-  min-height: 140px;
+  min-height: 90px;
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  gap: 8px;
-  border: 1px dashed #3b4c59;
-  border-radius: 7px;
-  background: rgba(255, 255, 255, 0.012);
+  gap: 5px;
+  border: 1px dashed #c9cdca;
+  border-radius: 3px;
+  background: #ffffff;
   cursor: pointer;
-  transition:
-    background 150ms ease,
-    border-color 150ms ease;
 }
 
 .sbml-dropzone:hover {
-  border-color: var(--color-accent);
-  background: var(--color-accent-soft);
+  background: #f8f9f8;
+  border-color: #8d9b91;
 }
 
 .sbml-dropzone-symbol {
-  color: var(--color-accent);
-  font-size: 25px;
+  color: #68746c;
+  font-size: 19px;
   line-height: 1;
 }
 
 .sbml-dropzone-title {
-  color: #dce4ed;
-  font-size: 11px;
-  font-weight: 600;
+  color: #343a40;
+  font-size: 10px;
+  font-weight: 550;
 }
 
 .sbml-dropzone-description {
   color: var(--color-subtle);
-  font-size: 10px;
+  font-size: 9px;
 }
 
 .sbml-selected-file {
   display: flex;
-  min-height: 66px;
+  min-height: 48px;
   align-items: center;
-  padding: 10px 12px;
-  gap: 12px;
+  padding: 8px;
+  gap: 9px;
   border: 1px solid var(--color-border);
-  border-radius: 7px;
-  background: rgba(255, 255, 255, 0.02);
+  border-radius: 3px;
+  background: #ffffff;
 }
 
 .sbml-selected-file-icon {
   display: grid;
-  width: 37px;
-  height: 37px;
-  flex: 0 0 37px;
+  width: 29px;
+  height: 29px;
+  flex: 0 0 29px;
   place-items: center;
-  border: 1px solid rgba(112, 183, 160, 0.25);
-  border-radius: 6px;
-  color: var(--color-accent);
-  font-size: 9px;
-  font-weight: 700;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  color: #596f60;
+  font-size: 8px;
+  font-weight: 600;
 }
 
 .sbml-file-details {
@@ -157,91 +144,86 @@
   flex: 1;
   min-width: 0;
   flex-direction: column;
-  gap: 5px;
+  gap: 3px;
 }
 
 .sbml-file-name {
   overflow: hidden;
-  color: #dce4ed;
-  font-size: 11px;
-  font-weight: 600;
+  color: #343a40;
+  font-size: 10px;
+  font-weight: 550;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .sbml-file-size {
   color: var(--color-subtle);
-  font-size: 10px;
+  font-size: 9px;
 }
 
 .sbml-remove-button {
-  width: 28px;
-  height: 28px;
+  width: 25px;
+  height: 25px;
   border: 1px solid var(--color-border);
-  border-radius: 5px;
-  background: transparent;
-  color: var(--color-muted);
-  font-size: 19px;
+  border-radius: 3px;
+  background: #ffffff;
+  color: #555d63;
+  font-size: 15px;
   cursor: pointer;
 }
 
 .sbml-remove-button:hover {
-  border-color: #a95f5f;
-  color: #e58a8a;
+  background: #f5f5f5;
 }
 
 .sbml-layout-select {
   width: 100%;
-  min-height: 39px;
-  padding: 0 11px;
-  border: 1px solid var(--color-border);
-  border-radius: 6px;
+  min-height: 32px;
+  padding: 0 8px;
+  border: 1px solid #d4d7d9;
+  border-radius: 3px;
   outline: none;
-  background: #111923;
-  color: #dce4ed;
+  background: #ffffff;
+  color: #343a40;
   font: inherit;
-  font-size: 11px;
+  font-size: 10px;
 }
 
 .sbml-layout-select:focus {
-  border-color: var(--color-accent);
+  border-color: #879d8d;
 }
 
 .sbml-import-button {
   display: flex;
-  min-height: 43px;
+  min-height: 32px;
   align-items: center;
-  justify-content: space-between;
-  padding: 0 15px;
-  border: 1px solid rgba(112, 183, 160, 0.35);
-  border-radius: 6px;
-  background: var(--color-accent-soft);
-  color: #cde9dc;
-  font-size: 11px;
-  font-weight: 600;
+  justify-content: center;
+  padding: 0 12px;
+  border: 1px solid #596f60;
+  border-radius: 3px;
+  background: #596f60;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 550;
   cursor: pointer;
-  transition:
-    background 150ms ease,
-    border-color 150ms ease;
 }
 
 .sbml-import-button:hover:not(:disabled) {
-  border-color: var(--color-accent);
-  background: rgba(112, 183, 160, 0.18);
+  background: #485d4f;
 }
 
 .sbml-import-button:disabled {
-  opacity: 0.5;
+  opacity: 0.55;
   cursor: not-allowed;
 }
 
 .sbml-spinner {
-  width: 13px;
-  height: 13px;
-  border: 2px solid rgba(205, 233, 220, 0.25);
-  border-top-color: #cde9dc;
+  width: 12px;
+  height: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #ffffff;
   border-radius: 50%;
-  animation: sbml-spin 700ms linear infinite;
+  animation: sbml-spin 900ms linear infinite;
 }
 
 @keyframes sbml-spin {
@@ -253,47 +235,46 @@
 .sbml-feedback {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-top: 17px;
-  padding: 12px;
+  gap: 5px;
+  margin-top: 12px;
+  padding: 9px;
   border: 1px solid var(--color-border);
-  border-radius: 6px;
+  border-radius: 3px;
   font-size: 10px;
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
 .sbml-feedback strong {
-  font-size: 11px;
+  font-size: 10px;
 }
 
 .sbml-feedback-error {
-  border-color: rgba(217, 120, 120, 0.3);
-  background: rgba(217, 120, 120, 0.06);
-  color: #e5a0a0;
+  border-color: #dfc4c4;
+  background: #fffafa;
+  color: #853b3b;
 }
 
 .sbml-feedback-success {
-  border-color: rgba(112, 183, 160, 0.3);
-  background: rgba(112, 183, 160, 0.06);
-  color: #a8d8c2;
+  border-color: #d0d9d2;
+  background: #f8faf8;
+  color: #405b49;
 }
 
 .sbml-panel-footer {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 20px;
-  padding-top: 13px;
+  gap: 7px;
+  margin-top: 13px;
+  padding-top: 9px;
   border-top: 1px solid var(--color-border);
   color: var(--color-subtle);
-  font-size: 8px;
-  letter-spacing: 0.8px;
+  font-size: 9px;
 }
 
 @media (max-width: 500px) {
   .sbml-import-panel {
-    padding: 17px;
+    padding: 11px;
   }
 
   .sbml-panel-footer {

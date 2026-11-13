@@ -183,16 +183,23 @@ class PathwayScene:
                     "Scene edge references a node that does not exist."
                 )
 
-            if edge.role is GraphEdgeRole.REACTANT:
+            if edge.role in (
+                GraphEdgeRole.REACTANT,
+                GraphEdgeRole.MODIFIER,
+            ):
                 valid_direction = (
                     source.node_type is GraphNodeType.METABOLITE
                     and target.node_type is GraphNodeType.REACTION
                 )
-            else:
+
+            elif edge.role is GraphEdgeRole.PRODUCT:
                 valid_direction = (
                     source.node_type is GraphNodeType.REACTION
                     and target.node_type is GraphNodeType.METABOLITE
                 )
+
+            else:
+                valid_direction = False
 
             if not valid_direction:
                 raise ValueError(

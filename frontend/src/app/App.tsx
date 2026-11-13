@@ -14,6 +14,8 @@ import {
   SBMLImportPanel,
 } from "../modules/pathways/components";
 
+import { AlignmentWorkspace } from "../modules/alignment/components";
+
 import "./App.css";
 
 type ModuleId = "pathways" | "alignment" | "structure";
@@ -266,13 +268,7 @@ function App() {
             />
           )}
 
-          {activeModule === "alignment" && (
-            <ModulePlaceholder
-              title="Sequence Alignment"
-              description="The sequence alignment workspace will be implemented as an independent biological module."
-              icon="≋"
-            />
-          )}
+          {activeModule === "alignment" && <AlignmentWorkspace />}
 
           {activeModule === "structure" && (
             <ModulePlaceholder

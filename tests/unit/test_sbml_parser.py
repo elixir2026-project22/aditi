@@ -247,7 +247,7 @@ def test_parser_rejects_reaction_without_products(parser):
         parser.parse(document)
 
 
-def test_parser_rejects_modifier_species_references(parser):
+def test_parser_supports_modifier_species_references(parser):
     document = sample_sbml().replace(
         "</reaction>",
         """
@@ -258,9 +258,15 @@ def test_parser_rejects_modifier_species_references(parser):
         """,
     )
 
-    with pytest.raises(SBMLParseError, match="modifier species"):
-        parser.parse(document)
+    result = parser.parse(document)
 
+    assert len(result.reactions) == 1
+
+    reaction = result.reactions[0]
+
+    assert len(reaction.modifiers) == 1
+    assert reaction.modifiers[0].metabolite_identifier == "glucose"
+    assert reaction.modifiers[0].coefficient == Decimal("1")
 
 def test_parser_rejects_doctype_declarations(parser):
     document = """<!DOCTYPE sbml [
@@ -274,3 +280,40 @@ def test_parser_rejects_doctype_declarations(parser):
 def test_parser_rejects_non_string_input(parser):
     with pytest.raises(TypeError, match="string or bytes"):
         parser.parse(123)
+
+
+def test_parser_preserves_repeated_modifier_references(parser):
+    document = sample_sbml().replace(
+        "</reaction>",
+        """
+        <listOfModifiers>
+            <modifierSpeciesReference
+                species="glucose"
+                metaid="modifier_one"/>
+            <modifierSpeciesReference
+                species="glucose"
+                metaid="modifier_two"/>
+            <modifierSpeciesReference
+                species="glucose"
+                metaid="modifier_three"/>
+        </listOfModifiers>
+        </reaction>
+        """,
+    )
+
+    result = parser.parse(document)
+
+    modifiers = result.reactions[0].modifiers
+
+    assert len(modifiers) == 3
+
+    assert all(
+        modifier.metabolite_identifier == "glucose"
+        for modifier in modifiers
+    )
+
+    assert [modifier.metaid for modifier in modifiers] == [
+        "modifier_one",
+        "modifier_two",
+        "modifier_three",
+    ]

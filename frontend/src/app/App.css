@@ -45,7 +45,7 @@
 }
 
 .brand-name {
-  color: #f0f2f6;
+  color: #051433;
   font-size: 16px;
   font-weight: 700;
   letter-spacing: 3px;
@@ -302,7 +302,7 @@
 
 .workspace-heading h1 {
   margin: 0;
-  color: #edf0f5;
+  color: #27467c;
   font-size: clamp(23px, 3vw, 29px);
   font-weight: 600;
   letter-spacing: -0.8px;

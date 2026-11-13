@@ -19,6 +19,9 @@ class SBMLPathwayConverter:
 
     SBML identifiers are preserved as external identifiers.
     Aditi generates independent internal UUID identities.
+
+    Repeated modifier references are retained by the parser but
+    represented once per metabolite in the domain reaction.
     """
 
     NAMESPACE = "sbml"
@@ -30,9 +33,46 @@ class SBMLPathwayConverter:
                 f"{context} requires a non-empty identifier."
             )
 
-    def convert(self, parsed_pathway: ParsedPathway) -> Pathway:
-        """Convert a parsed SBML pathway into a domain Pathway."""
+    def _convert_participants(
+        self,
+        participants,
+        metabolites: dict[str, Metabolite],
+        reaction_identifier: str,
+        *,
+        unique_metabolites: bool = False,
+    ) -> tuple[ReactionParticipant, ...]:
+        converted: list[ReactionParticipant] = []
+        seen_metabolites: set[str] = set()
 
+        for participant in participants:
+            metabolite_identifier = participant.metabolite_identifier
+
+            if (
+                unique_metabolites
+                and metabolite_identifier in seen_metabolites
+            ):
+                continue
+
+            try:
+                metabolite = metabolites[metabolite_identifier]
+            except KeyError as error:
+                raise SBMLConversionError(
+                    f"Reaction '{reaction_identifier}' references unknown "
+                    f"metabolite '{metabolite_identifier}'."
+                ) from error
+
+            converted.append(
+                ReactionParticipant(
+                    metabolite=metabolite,
+                    coefficient=participant.coefficient,
+                )
+            )
+
+            seen_metabolites.add(metabolite_identifier)
+
+        return tuple(converted)
+
+    def convert(self, parsed_pathway: ParsedPathway) -> Pathway:
         if not isinstance(parsed_pathway, ParsedPathway):
             raise TypeError(
                 "SBML conversion requires a ParsedPathway instance."
@@ -83,40 +123,31 @@ class SBMLPathwayConverter:
 
             reaction_ids.add(identifier)
 
-            try:
-                reactants = tuple(
-                    ReactionParticipant(
-                        metabolite=metabolites[
-                            participant.metabolite_identifier
-                        ],
-                        coefficient=participant.coefficient,
-                    )
-                    for participant in parsed_reaction.reactants
-                )
+            reactants = self._convert_participants(
+                parsed_reaction.reactants,
+                metabolites,
+                identifier,
+            )
 
-                products = tuple(
-                    ReactionParticipant(
-                        metabolite=metabolites[
-                            participant.metabolite_identifier
-                        ],
-                        coefficient=participant.coefficient,
-                    )
-                    for participant in parsed_reaction.products
-                )
+            products = self._convert_participants(
+                parsed_reaction.products,
+                metabolites,
+                identifier,
+            )
 
-            except KeyError as error:
-                unknown_identifier = error.args[0]
-
-                raise SBMLConversionError(
-                    f"Reaction '{identifier}' references unknown "
-                    f"metabolite '{unknown_identifier}'."
-                ) from error
+            modifiers = self._convert_participants(
+                parsed_reaction.modifiers,
+                metabolites,
+                identifier,
+                unique_metabolites=True,
+            )
 
             reactions.append(
                 Reaction(
                     name=parsed_reaction.name,
                     reactants=reactants,
                     products=products,
+                    modifiers=modifiers,
                     reversible=parsed_reaction.reversible,
                     external_identifiers=(
                         ExternalIdentifier(

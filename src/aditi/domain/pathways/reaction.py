@@ -14,7 +14,7 @@ class ReactionParticipant:
     Represents a metabolite participating in a biochemical reaction.
 
     The coefficient describes the metabolite's stoichiometric
-    contribution to the reaction.
+    contribution when applicable.
     """
 
     metabolite: Metabolite
@@ -47,8 +47,8 @@ class Reaction(BiologicalEntity):
     """
     Represents a biochemical reaction connecting metabolites.
 
-    Reactants are consumed and products are produced.
-    Stoichiometric coefficients describe their proportions.
+    Reactants are consumed, products are produced, and modifiers
+    influence the reaction without being consumed or produced.
     """
 
     name: str
@@ -57,6 +57,7 @@ class Reaction(BiologicalEntity):
     products: tuple[ReactionParticipant, ...]
 
     reversible: bool = False
+    modifiers: tuple[ReactionParticipant, ...] = ()
 
     def __post_init__(self) -> None:
         BiologicalEntity.__post_init__(self)
@@ -79,6 +80,11 @@ class Reaction(BiologicalEntity):
         if not isinstance(self.products, tuple):
             raise TypeError(
                 "Reaction products must be provided as a tuple."
+            )
+
+        if not isinstance(self.modifiers, tuple):
+            raise TypeError(
+                "Reaction modifiers must be provided as a tuple."
             )
 
         if not self.reactants:
@@ -106,12 +112,17 @@ class Reaction(BiologicalEntity):
             "products",
         )
 
+        self._validate_participants(
+            self.modifiers,
+            "modifiers",
+        )
+
     @staticmethod
     def _validate_participants(
         participants: tuple[ReactionParticipant, ...],
         label: str,
     ) -> None:
-        """Validate reaction participants and prevent duplicate metabolites."""
+        """Validate participants and prevent duplicates within a role."""
 
         seen_metabolites = set()
 

@@ -14,12 +14,7 @@ from aditi.domain.pathways.graph import (
 
 @dataclass(frozen=True, slots=True)
 class PathwayVisualNode:
-    """
-    Renderer-independent representation of a pathway graph node.
-
-    A visual node preserves the identity and biological category
-    of the entity while exposing a display label.
-    """
+    """Renderer-independent representation of a pathway graph node."""
 
     identity: EntityIdentity
     node_type: GraphNodeType
@@ -49,12 +44,7 @@ class PathwayVisualNode:
 
 @dataclass(frozen=True, slots=True)
 class PathwayVisualEdge:
-    """
-    Renderer-independent representation of a pathway graph edge.
-
-    The edge preserves its direction, biological role,
-    and stoichiometric coefficient.
-    """
+    """Renderer-independent representation of a pathway graph edge."""
 
     source_identity: EntityIdentity
     target_identity: EntityIdentity
@@ -155,17 +145,23 @@ class PathwayVisualization:
                     "Visualization edge references a node that does not exist."
                 )
 
-            if edge.role is GraphEdgeRole.REACTANT:
+            if edge.role in (
+                GraphEdgeRole.REACTANT,
+                GraphEdgeRole.MODIFIER,
+            ):
                 valid_direction = (
                     source.node_type is GraphNodeType.METABOLITE
                     and target.node_type is GraphNodeType.REACTION
                 )
 
-            else:
+            elif edge.role is GraphEdgeRole.PRODUCT:
                 valid_direction = (
                     source.node_type is GraphNodeType.REACTION
                     and target.node_type is GraphNodeType.METABOLITE
                 )
+
+            else:
+                valid_direction = False
 
             if not valid_direction:
                 raise ValueError(
@@ -190,12 +186,7 @@ class PathwayVisualization:
         cls,
         graph: PathwayGraph,
     ) -> PathwayVisualization:
-        """
-        Convert a biological pathway graph into a visualization model.
-
-        Biological identities, node categories, edge directions,
-        and stoichiometric coefficients are preserved.
-        """
+        """Convert a biological pathway graph into a visualization model."""
 
         if not isinstance(graph, PathwayGraph):
             raise TypeError(
